@@ -445,6 +445,50 @@ def valid_job_link(link):
 # 13. SEARCH AND EXTRACT JOBS
 # ============================================================
 
+# ============================================================
+# WORK MODE CHECK
+# ============================================================
+
+def detect_work_mode(text):
+
+    text = str(text).lower()
+
+    remote_words = [
+        "remote",
+        "work from home",
+        "wfh",
+        "work-from-home",
+        "fully remote",
+        "100% remote"
+    ]
+
+    hybrid_words = [
+        "hybrid",
+        "work from office and home",
+        "office and home"
+    ]
+
+    onsite_words = [
+        "on-site",
+        "onsite",
+        "on site",
+        "work from office",
+        "office based",
+        "office-based"
+    ]
+
+    if any(word in text for word in hybrid_words):
+        return "Hybrid"
+
+    if any(word in text for word in remote_words):
+        return "Remote"
+
+    if any(word in text for word in onsite_words):
+        return "On-site"
+
+    return "Not shown"
+
+
 def search_jobs():
 
     search_links_df = create_search_links()
