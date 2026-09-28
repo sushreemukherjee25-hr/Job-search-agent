@@ -453,19 +453,28 @@ def detect_work_mode(text):
 
     text = str(text).lower()
 
-    remote_words = [
-        "remote",
-        "work from home",
-        "wfh",
-        "work-from-home",
-        "fully remote",
-        "100% remote"
-    ]
+    # Check negative remote wording first
+    if any(word in text for word in [
+        "not remote",
+        "no remote",
+        "non remote",
+        "non-remote"
+    ]):
+        return "Not Remote"
 
     hybrid_words = [
         "hybrid",
         "work from office and home",
         "office and home"
+    ]
+
+    remote_words = [
+        "fully remote",
+        "100% remote",
+        "remote",
+        "work from home",
+        "wfh",
+        "work-from-home"
     ]
 
     onsite_words = [
@@ -477,6 +486,7 @@ def detect_work_mode(text):
         "office-based"
     ]
 
+    # Hybrid must be checked before remote
     if any(word in text for word in hybrid_words):
         return "Hybrid"
 
@@ -603,6 +613,12 @@ def search_jobs():
                 context = context[:4000]
 
                 # ----------------------------------------
+                # Work Mode
+                # ----------------------------------------
+
+                work_mode = detect_work_mode(context)
+
+                # ----------------------------------------
                 # Skills
                 # ----------------------------------------
 
@@ -668,12 +684,14 @@ def search_jobs():
 
                     match_reason += (
                         " | India-wide remote"
+                        f" | Work Mode: {work_mode}"
                     )
 
                 else:
 
                     match_reason += (
                         " | Kolkata"
+                        f" | Work Mode: {work_mode}"
                     )
 
                 # ----------------------------------------
@@ -693,6 +711,8 @@ def search_jobs():
                         if search_type == "India Remote"
                         else "Kolkata"
                     ),
+
+                    "Work Mode": work_mode,
 
                     "Experience": experience,
 
@@ -786,12 +806,34 @@ def filter_jobs(jobs_df):
     ].copy()
 
     # --------------------------------------------------------
-    # Location
+    # Location + Work Mode
+    #
+    # RULE:
+    # Kolkata -> On-site, Hybrid and Remote are all allowed.
+    # Outside Kolkata -> Remote ONLY.
     # --------------------------------------------------------
 
     filtered = filtered[
         filtered["Search Type"].isin(
             SEARCH_TYPES
+        )
+    ].copy()
+
+    filtered = filtered[
+        (
+            # Kolkata: all work modes are allowed
+            (
+                filtered["Search Type"] == "Kolkata"
+            )
+
+            |
+
+            # India Remote: only confirmed Remote jobs
+            (
+                (filtered["Search Type"] == "India Remote")
+                &
+                (filtered["Work Mode"] == "Remote")
+            )
         )
     ].copy()
 
@@ -894,6 +936,7 @@ def clean_jobs(jobs_df):
         "Experience",
         "Salary",
         "Matched Skills",
+        "Work Mode",
         "Source",
         "Search Type",
         "Application Link"
@@ -1287,4 +1330,5 @@ def main():
 # ============================================================
 
 if __name__ == "__main__":
-    main()
+    main(
+
