@@ -71,7 +71,7 @@ PORTALS = [
     "Shine"
 ]
 
-# ============================================================
+
 # 4. REQUEST SETTINGS
 # ============================================================
 
@@ -99,7 +99,6 @@ def create_search_links():
     for role in TARGET_ROLES:
 
         r = quote(role)
-
         role_slug = role.lower().replace(" ", "-")
 
         # ----------------------------------------------------
@@ -124,19 +123,16 @@ def create_search_links():
 
             "Shine":
                 f"https://www.shine.com/job-search/"
-                f"{role_slug}-jobs",
-
+                f"{role_slug}-jobs"
         }
 
         for portal, link in remote_links.items():
-
             search_links.append({
                 "Role": role,
                 "Portal": portal,
                 "Search Type": "India Remote",
                 "Search Link": link
             })
-
 
         # ----------------------------------------------------
         # KOLKATA
@@ -145,8 +141,7 @@ def create_search_links():
         kolkata_links = {
 
             "Naukri":
-                f"https://www.naukri.com/"
-                f"{role_slug}-jobs-in-kolkata",
+                f"https://www.naukri.com/{role_slug}-jobs-in-kolkata",
 
             "LinkedIn India":
                 f"https://www.linkedin.com/jobs/search/"
@@ -158,17 +153,14 @@ def create_search_links():
                 f"q={r}&l=Kolkata%2C%20West%20Bengal",
 
             "Internshala":
-                f"https://internshala.com/jobs/"
-                f"{role_slug}-jobs-in-kolkata/",
+                f"https://internshala.com/jobs/{role_slug}-jobs-in-kolkata/",
 
             "Shine":
                 f"https://www.shine.com/job-search/"
-                f"{role_slug}-jobs-in-kolkata",
-
+                f"{role_slug}-jobs-in-kolkata"
         }
 
         for portal, link in kolkata_links.items():
-
             search_links.append({
                 "Role": role,
                 "Portal": portal,
@@ -767,34 +759,21 @@ def filter_jobs(jobs_df):
     ].copy()
 
     # --------------------------------------------------------
-    # Location + Work Mode
-    #
-    # RULE:
-    # Kolkata -> On-site, Hybrid and Remote are all allowed.
-    # Outside Kolkata -> Remote ONLY.
+    # Location + work mode
     # --------------------------------------------------------
 
     filtered = filtered[
-        filtered["Search Type"].isin(
-            SEARCH_TYPES
-        )
+        filtered["Search Type"].isin(SEARCH_TYPES)
     ].copy()
 
+    # Kolkata: On-site + Hybrid + Remote are allowed.
+    # Other Indian locations: Remote only.
     filtered = filtered[
+        (filtered["Search Type"] == "Kolkata")
+        |
         (
-            # Kolkata: all work modes are allowed
-            (
-                filtered["Search Type"] == "Kolkata"
-            )
-
-            |
-
-            # India Remote: only confirmed Remote jobs
-            (
-                (filtered["Search Type"] == "India Remote")
-                &
-                (filtered["Work Mode"] == "Remote")
-            )
+            (filtered["Search Type"] == "India Remote")
+            & (filtered["Work Mode"] == "Remote")
         )
     ].copy()
 
@@ -894,6 +873,7 @@ def clean_jobs(jobs_df):
         "Job Title",
         "Company",
         "Location",
+        "Work Mode",
         "Experience",
         "Salary",
         "Matched Skills",
@@ -994,6 +974,7 @@ def clean_jobs(jobs_df):
         "Job Title",
         "Company",
         "Location",
+        "Work Mode",
         "Experience",
         "Salary",
         "Matched Skills",
