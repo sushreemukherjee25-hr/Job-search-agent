@@ -68,13 +68,8 @@ PORTALS = [
     "LinkedIn India",
     "Indeed India",
     "Internshala",
-    "Foundit",
-    "Cutshort",
-    "Hirist",
-    "Shine",
-    "TimesJobs"
+    "Shine"
 ]
-
 
 # ============================================================
 # 4. REQUEST SETTINGS
@@ -127,27 +122,10 @@ def create_search_links():
             "Internshala":
                 "https://internshala.com/remote-jobs/",
 
-            "Foundit":
-                f"https://www.foundit.in/search/"
-                f"{role_slug}-jobs",
-
-            "Cutshort":
-                f"https://cutshort.io/search-jobs?"
-                f"query={r}&location=India",
-
-            "Hirist":
-                f"https://www.hirist.tech/"
-                f"{role_slug}-jobs",
-
             "Shine":
                 f"https://www.shine.com/job-search/"
                 f"{role_slug}-jobs",
 
-            "TimesJobs":
-                f"https://www.timesjobs.com/"
-                f"candidate/job-search.html?"
-                f"searchType=personalizedSearch&"
-                f"txtKeywords={r}&txtLocation=India"
         }
 
         for portal, link in remote_links.items():
@@ -183,27 +161,10 @@ def create_search_links():
                 f"https://internshala.com/jobs/"
                 f"{role_slug}-jobs-in-kolkata/",
 
-            "Foundit":
-                f"https://www.foundit.in/search/"
-                f"{role_slug}-jobs-in-kolkata",
-
-            "Cutshort":
-                f"https://cutshort.io/search-jobs?"
-                f"query={r}&location=Kolkata",
-
-            "Hirist":
-                f"https://www.hirist.tech/"
-                f"{role_slug}-jobs-in-kolkata",
-
             "Shine":
                 f"https://www.shine.com/job-search/"
                 f"{role_slug}-jobs-in-kolkata",
 
-            "TimesJobs":
-                f"https://www.timesjobs.com/"
-                f"candidate/job-search.html?"
-                f"searchType=personalizedSearch&"
-                f"txtKeywords={r}&txtLocation=Kolkata"
         }
 
         for portal, link in kolkata_links.items():
@@ -1330,5 +1291,4 @@ def main():
 # ============================================================
 
 if __name__ == "__main__":
-    main(
-
+    main()
